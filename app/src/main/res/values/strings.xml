@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">RetrofitV1</string>
+    <string name="load">Load</string>
 </resources>
