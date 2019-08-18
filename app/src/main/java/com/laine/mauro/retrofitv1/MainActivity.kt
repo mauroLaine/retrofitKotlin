@@ -3,13 +3,17 @@ package com.laine.mauro.retrofitv1
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.internal.GsonBuildConfig
+import com.laine.mauro.retrofitv1.data.UserService
+import com.laine.mauro.retrofitv1.model.User
 import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.OkHttpClient
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.lang.Exception
+import android.os.StrictMode
+import retrofit2.Call
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,9 +22,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         load_button.setOnClickListener {
-
-            Toast.makeText(this, "hi!", Toast.LENGTH_SHORT).show()
-
+            getData()
         }
 
     }
@@ -33,9 +35,28 @@ class MainActivity : AppCompatActivity() {
             .client(httpClient.build())
             .build()
 
+        val userService: UserService = retrofit.create(UserService::class.java)
+        val callSync = userService.getUser(MY_USER_NAME)
+
+        synchronousCall(callSync)
+    }
+
+    fun synchronousCall(callSync: Call<User>) {
+        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
+        StrictMode.setThreadPolicy(policy)
+        try {
+            val response: Response<User> = callSync.execute()
+            val user = response.body()
+            user?.let {
+                Toast.makeText(this, user.blog, Toast.LENGTH_SHORT).show()
+            }
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
     }
 
     companion object {
         val API_URL = "https://api.github.com/"
+        val MY_USER_NAME = "mauroLaine"
     }
 }
