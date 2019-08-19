@@ -13,6 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.Exception
 import android.os.StrictMode
 import retrofit2.Call
+import retrofit2.Callback
 
 
 class MainActivity : AppCompatActivity() {
@@ -38,7 +39,8 @@ class MainActivity : AppCompatActivity() {
         val userService: UserService = retrofit.create(UserService::class.java)
         val callSync = userService.getUser(MY_USER_NAME)
 
-        synchronousCall(callSync)
+//        synchronousCall(callSync)
+        asynchronousCall(callSync)
     }
 
     fun synchronousCall(callSync: Call<User>) {
@@ -48,11 +50,26 @@ class MainActivity : AppCompatActivity() {
             val response: Response<User> = callSync.execute()
             val user = response.body()
             user?.let {
-                Toast.makeText(this, user.blog, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, it.blog, Toast.LENGTH_SHORT).show()
             }
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
+    }
+
+    fun asynchronousCall(callSync: Call<User>) {
+        callSync.enqueue(object : Callback<User> {
+            override fun onFailure(call: Call<User>, t: Throwable) {
+                t.printStackTrace()
+            }
+
+            override fun onResponse(call: Call<User>, response: Response<User>) {
+                val user = response.body()
+                user?.let {
+                    Toast.makeText(applicationContext, it.blog, Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
     }
 
     companion object {
