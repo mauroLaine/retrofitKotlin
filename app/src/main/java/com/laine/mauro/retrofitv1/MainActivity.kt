@@ -9,6 +9,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Response
 import java.lang.Exception
 import android.os.StrictMode
+import android.util.Log
 import com.laine.mauro.retrofitv1.data.GitHubServiceGenerator
 import retrofit2.Call
 import retrofit2.Callback
@@ -26,7 +27,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun getData() {
-        val userService: UserService = GitHubServiceGenerator.createService(UserService::class.java, "test")
+        val userService: UserService = GitHubServiceGenerator.createService(UserService::class.java)
         val callSync = userService.getUser(MY_USER_NAME)
 
 //        synchronousCall(callSync)
@@ -55,6 +56,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onResponse(call: Call<User>, response: Response<User>) {
                 val user = response.body()
+                Log.d("### ","{} - {}" + response.code() + ", " + response.body().toString());
                 user?.let {
                     Toast.makeText(applicationContext, it.blog, Toast.LENGTH_SHORT).show()
                 }
