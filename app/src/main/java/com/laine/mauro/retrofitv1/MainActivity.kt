@@ -6,12 +6,10 @@ import android.widget.Toast
 import com.laine.mauro.retrofitv1.data.UserService
 import com.laine.mauro.retrofitv1.model.User
 import kotlinx.android.synthetic.main.activity_main.*
-import okhttp3.OkHttpClient
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.Exception
 import android.os.StrictMode
+import com.laine.mauro.retrofitv1.data.GitHubServiceGenerator
 import retrofit2.Call
 import retrofit2.Callback
 
@@ -25,18 +23,10 @@ class MainActivity : AppCompatActivity() {
         load_button.setOnClickListener {
             getData()
         }
-
     }
 
     fun getData() {
-        val httpClient: OkHttpClient.Builder = OkHttpClient.Builder()
-        val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl(API_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(httpClient.build())
-            .build()
-
-        val userService: UserService = retrofit.create(UserService::class.java)
+        val userService: UserService = GitHubServiceGenerator.createService(UserService::class.java)
         val callSync = userService.getUser(MY_USER_NAME)
 
 //        synchronousCall(callSync)
@@ -73,7 +63,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        val API_URL = "https://api.github.com/"
         val MY_USER_NAME = "mauroLaine"
     }
 }
