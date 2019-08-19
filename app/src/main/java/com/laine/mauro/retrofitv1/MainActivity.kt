@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun getData() {
-        val userService: UserService = GitHubServiceGenerator.createService(UserService::class.java)
+        val userService: UserService = GitHubServiceGenerator.createService(UserService::class.java, "test")
         val callSync = userService.getUser(MY_USER_NAME)
 
 //        synchronousCall(callSync)
